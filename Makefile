@@ -45,8 +45,5 @@ $(BUILD_DIR)/ios_hello_world: $(TEST_DIR)/ios_hello_world.c
 run_ios_hello_world: ios_hello_world $(RUNNER_BIN) $(INTERPOSE_LIB)
 	$(DYLD_ENV_VARS) ./$(BUILD_DIR)/$(RUNNER_BIN) $(BUILD_DIR)/ios_hello_world
 
-test_snapchat: $(RUNNER_BIN) $(INTERPOSE_LIB)
-	$(DYLD_ENV_VARS) ./$(BUILD_DIR)/$(RUNNER_BIN) apps/Snapchat.app/Snapchat
-
-test_blank: $(RUNNER_BIN) $(INTERPOSE_LIB)
+run_blankapp: $(RUNNER_BIN) $(INTERPOSE_LIB)
 	$(DYLD_ENV_VARS) ./$(BUILD_DIR)/$(RUNNER_BIN) apps/blankapp.app/blankapp
