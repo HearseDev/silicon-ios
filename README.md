@@ -20,7 +20,12 @@ You can run `make clean run_ios_hello_world` or `make clean run_blankapp` to qui
 To run:
 
 1. `make clean all`
-2. `DYLD_SHARED_REGION=1 ./build/runner /path/to/app.app/app`
+2. `DYLD_SHARED_REGION=1 ./build/runner /path/to/app.app/app` (The application must be signed)
+
+TODO:
+- Rewrite/clean project structure
+- Codesign AMFI bypass
+- Command line options
 
 # Credits
 
