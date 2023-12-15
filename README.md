@@ -2,6 +2,8 @@
 
 **Requires SIP to be disabled**
 
+VERY EARLY POC, there is still a lot left to do
+
 You need ldid to build
 `brew install ldid`
 
