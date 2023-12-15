@@ -1,5 +1,4 @@
 #include "interpose.h"
-#import <CoreLocation/CoreLocation.h>
 
 xpc_object_t my_xpc_copy_entitlements_for_self() {
   printf("[*] Faking com.apple.private.security.no-sandbox entitlement in "
@@ -11,13 +10,3 @@ xpc_object_t my_xpc_copy_entitlements_for_self() {
 }
 DYLD_INTERPOSE(my_xpc_copy_entitlements_for_self,
                xpc_copy_entitlements_for_self);
-
-@class CLLocationManager;
-@interface CLLocationManager (oh)
-- (void)startMonitoringLocationPushesWithCompletion:(id)arg1;
-@end
-
-@implementation CLLocationManager (oh)
-- (void)startMonitoringLocationPushesWithCompletion:(id)arg1 {
-}
-@end

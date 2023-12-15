@@ -13,6 +13,8 @@
 
 #include "inject.h"
 #include "runner.h"
+#include "uikitsystem_patch.h"
+#include <thread>
 
 #define PLATFORM_IOS 2
 
@@ -59,20 +61,22 @@ void instrument(pid_t pid) {
 int run(char *argv[], RunnerOptions options) {
   std::vector<char *> newEnv(environ,
                              environ + sizeof(environ) / sizeof environ[0]);
-  newEnv.insert(
-      newEnv.end(),
-      {(char *)"COMMAND_MODE=unix2003",
-       (char *)"CFFIXED_USER_HOME=./Library/Containers/UUID/Data",
-       (char *)"HOME=./Library/Containers/UUID/Data",
-       (char *)"LOGNAME=administrator", (char *)"MallocSpaceEfficient=1",
-       (char *)"PATH=/usr/bin:/bin:/usr/sbin:/sbin", (char *)"SHELL=/bin/bash",
-       (char *)"SSH_AUTH_SOCK=/private/tmp/com.apple.launchd.RANDOM/Listeners",
-       (char *)"TMPDIR=/Users/administrator/Library/Containers/UUID/Data/tmp",
-       (char *)"USER=administrator", (char *)"XPC_FLAGS=1",
-       (char *)"_DYLD_CLOSURE_HOME=/Users/administrator/Library/Containers/"
-               "UUID/Data",
-       (char *)"__CFBundleIdentifier=com.toyopagroup.picaboo",
-       (char *)"__CF_USER_TEXT_ENCODING=0x1F5:0x0:0x0", 0});
+  // newEnv.insert(
+  //     newEnv.end(),
+  //     {(char *)"COMMAND_MODE=unix2003",
+  //      (char *)"CFFIXED_USER_HOME=./Library/Containers/UUID/Data",
+  //      (char *)"HOME=./Library/Containers/UUID/Data",
+  //      (char *)"LOGNAME=administrator", (char *)"MallocSpaceEfficient=1",
+  //      (char *)"PATH=/usr/bin:/bin:/usr/sbin:/sbin", (char
+  //      *)"SHELL=/bin/bash", (char
+  //      *)"SSH_AUTH_SOCK=/private/tmp/com.apple.launchd.RANDOM/Listeners",
+  //      (char
+  //      *)"TMPDIR=/Users/administrator/Library/Containers/UUID/Data/tmp",
+  //      (char *)"USER=administrator", (char *)"XPC_FLAGS=1",
+  //      (char *)"_DYLD_CLOSURE_HOME=/Users/administrator/Library/Containers/"
+  //              "UUID/Data",
+  //      (char *)"__CFBundleIdentifier=com.toyopagroup.picaboo",
+  //      (char *)"__CF_USER_TEXT_ENCODING=0x1F5:0x0:0x0", 0});
 
   //  (char *)"XPC_SERVICE_NAME=application.com..blankapp",
   //      (char *)"DYLD_PRINT_LIBRARIES=1", (char *)"DYLD_PRINT_APIS=1",
@@ -102,6 +106,10 @@ int run(char *argv[], RunnerOptions options) {
   assert(posix_spawn(&pid, argv[0], &action, &attr, argv, &newEnv[0]) == 0);
   printf("[+] Child process created with pid: %i\n", pid);
   instrument(pid);
+
+  printf("[*] Patching UIKitSystem\n");
+  std::thread frida_thread(patch_uikitsystem);
+  frida_thread.detach();
   printf("[*] Process %d started. Attach now, and click enter.\n", pid);
   getchar();
   printf("[*] Sending SIGCONT to continue child\n");

@@ -1,13 +1,18 @@
+// This is the script that will be injected into the target process, this file is just here for testing purposes.
+// The script is already loaded by uikitsystem_patch.mm
 function getOCMethodName(className, funcName) {
   var hook = eval("ObjC.classes." + className + '["' + funcName + '"]');
   return hook;
 }
 
-function returnTrueOrFalse(type, targetClass, targetMethod, ret){
-  const targetMethodAddress = getOCMethodName(targetClass, `${type} ${targetMethod}`);
+function returnTrueOrFalse(type, targetClass, targetMethod, ret) {
+  const targetMethodAddress = getOCMethodName(
+    targetClass,
+    `${type} ${targetMethod}`
+  );
   if (targetMethodAddress !== null) {
     console.log(
-      "Found address of " +
+      "[*] Found address of " +
         targetClass +
         " " +
         targetMethod +
@@ -35,5 +40,5 @@ function returnTrueOrFalse(type, targetClass, targetMethod, ret){
   }
 }
 
-returnTrueOrFalse("-", "RBSProcessIdentity", "isApplication", 1)
-returnTrueOrFalse("-", "FBProcess", "isApplicationProcess", 1)
+returnTrueOrFalse("-", "RBSProcessIdentity", "isApplication", 1);
+returnTrueOrFalse("-", "FBProcess", "isApplicationProcess", 1);
